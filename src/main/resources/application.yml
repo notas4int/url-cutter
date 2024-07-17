@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: url-cut-app
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/url-dependencies
+    username: postgres
+    password: postgres
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+service:
+   url-domain: localhost:8080/api/v1/super-url-cutter
