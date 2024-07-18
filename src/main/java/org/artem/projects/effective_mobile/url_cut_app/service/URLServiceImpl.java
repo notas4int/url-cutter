@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.artem.projects.effective_mobile.url_cut_app.dto.CreatingShortedUrlRequest;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.ShortedUrlNotFoundException;
+import org.artem.projects.effective_mobile.url_cut_app.exceptions.UrlTimeExpiredLivenessException;
 import org.artem.projects.effective_mobile.url_cut_app.models.UrlDependencies;
 import org.artem.projects.effective_mobile.url_cut_app.repositories.URLRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +53,12 @@ public class URLServiceImpl implements URLService {
         UrlDependencies urlDependencies = urlRepository.findByAlias(alias)
                 .orElseThrow(() -> new ShortedUrlNotFoundException("Url '" + "http://" + domainUrl + alias + "' not found"));
 
+        if (urlDependencies.getExpirationTime() != null) {
+            if (urlDependencies.getExpirationTime().isBefore(LocalDateTime.now())) {
+                urlRepository.delete(urlDependencies);
+                throw new UrlTimeExpiredLivenessException("Url '" + "http://" + domainUrl + alias + "' expired");
+            }
+        }
         return urlDependencies.getOriginalUrl();
     }
 }
