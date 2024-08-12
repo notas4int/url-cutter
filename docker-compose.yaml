@@ -1,0 +1,42 @@
+version: '2.1'
+
+services:
+  url-cut-app:
+    image: url-cut-app:latest
+    build:
+      context: .
+      args:
+        DOCKER_BUILDKIT: 1
+    restart: "no"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+#  flyway:
+#    image: flyway/flyway
+#    command: -url=jdbc:postgresql://postgres:5432/url-dependencies -schemas=public -user=postgres -password=postgres migrate
+#    volumes:
+#      - ./flyway:/flyway/sql
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+  postgres:
+    image: postgres:15.6-alpine
+    restart: "no"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: url-dependencies
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-U", "postgres" ]
+      interval: 5s
+      timeout: 1s
+      retries: 2
+#    depends_on:
+#      - url-cut-app
+volumes:
+  postgres_data:
