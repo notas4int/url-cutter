@@ -1,6 +1,7 @@
 package org.artem.projects.effective_mobile.url_cut_app.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.artem.projects.effective_mobile.url_cut_app.exceptions.AliasAlreadyUsedException;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.ExceptionResponse;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.ShortedUrlNotFoundException;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.UrlTimeExpiredLivenessException;
@@ -21,7 +22,7 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UrlTimeExpiredLivenessException.class)
+    @ExceptionHandler({UrlTimeExpiredLivenessException.class, AliasAlreadyUsedException.class})
     public ResponseEntity<ExceptionResponse> handleExpiredExceptions(RuntimeException e,
                                                                       HttpServletRequest request) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(request.getRequestURI(), e.getMessage(),

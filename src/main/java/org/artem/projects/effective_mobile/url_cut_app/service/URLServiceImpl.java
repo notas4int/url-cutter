@@ -3,6 +3,7 @@ package org.artem.projects.effective_mobile.url_cut_app.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.artem.projects.effective_mobile.url_cut_app.dto.CreatingShortedUrlRequest;
+import org.artem.projects.effective_mobile.url_cut_app.exceptions.AliasAlreadyUsedException;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.ShortedUrlNotFoundException;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.UrlTimeExpiredLivenessException;
 import org.artem.projects.effective_mobile.url_cut_app.models.UrlDependencies;
@@ -26,11 +27,15 @@ public class URLServiceImpl implements URLService {
     public String shorten(CreatingShortedUrlRequest urlRequest) {
         String shortenedUrl;
         String randomAlias = null;
-        if (urlRequest.alias() != null)
+        if (urlRequest.alias() != null) {
+            if (urlRepository.existsByAlias(urlRequest.alias()))
+                throw new AliasAlreadyUsedException("Alias '" + urlRequest.alias() + "' is already used");
+
             shortenedUrl = "http://" + domainUrl + "/" + urlRequest.alias();
-        else {
-            // TODO: поиграть с проверкой уникальности
-            randomAlias = RandomStringUtils.random(50, true, true);
+        } else {
+            do randomAlias = RandomStringUtils.random(50, true, true);
+            while (urlRepository.existsByAlias(randomAlias));
+
             shortenedUrl = "http://" + domainUrl + "/" + randomAlias;
         }
 
