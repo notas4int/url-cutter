@@ -56,12 +56,12 @@ public class URLServiceImpl implements URLService {
     @Override
     public String getOriginalUrlByAlias(String alias) {
         UrlDependencies urlDependencies = urlRepository.findByAlias(alias)
-                .orElseThrow(() -> new ShortedUrlNotFoundException("Url '" + "http://" + domainUrl + alias + "' not found"));
+                .orElseThrow(() -> new ShortedUrlNotFoundException("Url '" + "http://" + domainUrl + "/" + alias + "' not found"));
 
         if (urlDependencies.getExpirationTime() != null) {
             if (urlDependencies.getExpirationTime().isBefore(LocalDateTime.now())) {
                 urlRepository.delete(urlDependencies);
-                throw new UrlTimeExpiredLivenessException("Url '" + "http://" + domainUrl + alias + "' expired");
+                throw new UrlTimeExpiredLivenessException("Url '" + "http://" + domainUrl + "/" + alias + "' expired");
             }
         }
         return urlDependencies.getOriginalUrl();
