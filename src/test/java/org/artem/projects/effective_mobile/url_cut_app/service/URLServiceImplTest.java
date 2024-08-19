@@ -1,6 +1,5 @@
 package org.artem.projects.effective_mobile.url_cut_app.service;
 
-import lombok.extern.log4j.Log4j2;
 import org.artem.projects.effective_mobile.url_cut_app.dto.CreatingShortedUrlRequest;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.AliasAlreadyUsedException;
 import org.artem.projects.effective_mobile.url_cut_app.exceptions.ShortedUrlNotFoundException;
@@ -23,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@Log4j2
 @ExtendWith(MockitoExtension.class)
 class URLServiceImplTest {
     @Mock

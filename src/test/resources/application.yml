@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:15.6:///url-dependencies
+    username: postgres
+    password: postgres
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  flyway:
+    user: postgres
+    password: postgres
+service:
+  url-domain: localhost:8080/api/v1/super-url-cutter
